@@ -1,2 +1,3 @@
-# simple_ai
-A Simple AI inference framework
+## A Simple AI
+
+A Simple AI Inference Framework

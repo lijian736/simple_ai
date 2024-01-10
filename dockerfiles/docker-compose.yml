@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+      simple_ai_service:
+            image: simple_ai_image:latest
+            network_mode: "bridge"
+            tty: true
+            restart: always
+            build:
+                  context: .
+                  dockerfile: Dockerfile.simple_ai
+            container_name: simple_ai_container
+            user: 0:0
+            volumes:
+                  - ../:/code/simple_ai
+
