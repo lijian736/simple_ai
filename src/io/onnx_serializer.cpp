@@ -186,7 +186,7 @@ Status OnnxSerializer::parse_onnx_graph(const onnx::GraphProto& onnx_graph, std:
         if (!input.name().empty()) {
             LOG_INFO("Grapn input name: %s", input.name().c_str());
             const onnx::TypeProto& type = input.type();
-            if (type.value_case() != onnx::TypeProto::VALUE_NOT_SET && type.has_tensor_type()) {
+            if (type.value_case() == onnx::TypeProto::ValueCase::kTensorType) {
                 const onnx::TypeProto_Tensor tensor_type = type.tensor_type();
                 PrimitiveDataType dt =
                     tensor_datatype_to_primitive(static_cast<onnx::TensorProto_DataType>(tensor_type.elem_type()));
@@ -240,7 +240,7 @@ Status OnnxSerializer::parse_onnx_graph(const onnx::GraphProto& onnx_graph, std:
     for (auto& output : onnx_graph.output()) {
         if (!output.name().empty()) {
             const onnx::TypeProto& type = output.type();
-            if (type.value_case() != onnx::TypeProto::VALUE_NOT_SET && type.has_tensor_type()) {
+            if (type.value_case() == onnx::TypeProto::ValueCase::kTensorType) {
                 const onnx::TypeProto_Tensor tensor_type = type.tensor_type();
                 PrimitiveDataType dt =
                     tensor_datatype_to_primitive(static_cast<onnx::TensorProto_DataType>(tensor_type.elem_type()));
@@ -265,7 +265,7 @@ Status OnnxSerializer::parse_onnx_graph(const onnx::GraphProto& onnx_graph, std:
     for (auto& val_info : onnx_graph.value_info()) {
         if (!val_info.name().empty()) {
             const onnx::TypeProto& type = val_info.type();
-            if (type.value_case() != onnx::TypeProto::VALUE_NOT_SET && type.has_tensor_type()) {
+            if (type.value_case() == onnx::TypeProto::ValueCase::kTensorType) {
                 const onnx::TypeProto_Tensor tensor_type = type.tensor_type();
                 PrimitiveDataType dt =
                     tensor_datatype_to_primitive(static_cast<onnx::TensorProto_DataType>(tensor_type.elem_type()));
@@ -285,7 +285,7 @@ Status OnnxSerializer::parse_onnx_graph(const onnx::GraphProto& onnx_graph, std:
     // Step 5. Process the nodes in the graph
     int node_id = -1;
     for (auto& proto_node : onnx_graph.node()) {
-        //skip the 'Constant' node
+        // skip the 'Constant' node
         if (proto_node.op_type() == "Constant") {
             continue;
         }
@@ -558,7 +558,7 @@ PrimitiveDataType OnnxSerializer::tensor_datatype_to_primitive(const onnx::Tenso
 TensorShape OnnxSerializer::shapeproto_to_tensorshape(const onnx::TensorShapeProto& shape_proto) {
     TensorShape shape;
     for (auto& dim : shape_proto.dim()) {
-        if (dim.value_case() != onnx::TensorShapeProto_Dimension::VALUE_NOT_SET) {
+        if (dim.value_case() == onnx::TensorShapeProto_Dimension::ValueCase::kDimValue) {
             int64_t dim_val = dim.dim_value();
             shape.add_dim(dim_val);
         } else {
